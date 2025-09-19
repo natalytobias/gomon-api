@@ -66,7 +66,7 @@ async def processar_dados(
             # Monta a lista de argumentos para a chamada de subprocesso
             cmd_args = [
                 "Rscript",
-                "GomRccp_API.R", # Nome do script R que acabamos de criar
+                "GomRccp_API.R",
                 "--file-path", csv_path,
                 "--k-initial", str(k_initial),
                 "--k-final", str(k_final),
