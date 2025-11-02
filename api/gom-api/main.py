@@ -27,6 +27,18 @@ app.add_middleware(
     allow_headers=["*"],    # libera todos os headers
 )
 
+def desconcatena_vars(string_vars: Optional[str]) -> List[str]:
+            """
+            Desconcatena a string de variáveis separadas por vírgula em uma lista
+            Remove espaços em branco e entradas vazias
+            """
+            if not string_vars or not string_vars.strip():
+                return []
+            
+            vars_list = [var.strip() for var in string_vars.split(",")]
+            vars_list = [var for var in vars_list if var]
+            return vars_list
+
 
 # Endpoint de verificação de status da API
 @app.get("/")
@@ -46,18 +58,14 @@ async def processar_dados(
         raise HTTPException(status_code=400, detail="O arquivo deve ser um CSV.")
         
     try:
-        # Acessa o conteúdo do arquivo para validação inicial
         contents = await file.read()
         csv_data = StringIO(contents.decode('utf-8'))
         df = pd.read_csv(csv_data)
 
-        # FUNÇÃO PARA LIMPAR NOMES DE COLUNAS E CONTEÚDO - REMOVE ASPAS E ESPAÇOS
         def limpar_dataframe(df):
-            """Remove aspas, espaços extras e caracteres indesejados dos nomes das colunas e do conteúdo"""
-            # Limpa os nomes das colunas
             df.columns = [col.replace('"', '').replace("'", "").strip() for col in df.columns]
             
-            # Limpa o conteúdo de todas as células (remove aspas e espaços extras)
+           
             for col in df.columns:
                 # Converte para string e remove aspas
                 df[col] = df[col].astype(str).str.replace('"', '').str.replace("'", "").str.strip()
@@ -66,39 +74,21 @@ async def processar_dados(
                 try:
                     df[col] = pd.to_numeric(df[col])
                 except (ValueError, TypeError):
-                    # Mantém como string se não for conversível para numérico
                     pass
             
             return df
 
-        # Aplica a limpeza no DataFrame completo
+        
         df = limpar_dataframe(df)
 
-        # Validação da coluna de identificação
         if case_id not in df.columns:
             raise HTTPException(
                 status_code=400, 
                 detail=f"O CSV não contém a coluna '{case_id}'. Colunas disponíveis: {list(df.columns)}"
             )
-
-        # FUNÇÃO PARA DESCONCATENAR A STRING EM VETOR
-        def desconcatena_vars(string_vars: Optional[str]) -> List[str]:
-            """
-            Desconcatena a string de variáveis separadas por vírgula em uma lista
-            Remove espaços em branco e entradas vazias
-            """
-            if not string_vars or not string_vars.strip():
-                return []
-            
-            vars_list = [var.strip() for var in string_vars.split(",")]
-            vars_list = [var for var in vars_list if var]
-            return vars_list
-
-        # Desconcatena a string em vetor
+        
         internal_vars = desconcatena_vars(internal_vars_string)
-        print(f"Variáveis internas processadas: {internal_vars}")
 
-        # Validação das variáveis internas
         if internal_vars:
             missing_vars = [var for var in internal_vars if var not in df.columns]
             print(f"Variáveis para validação: {internal_vars}")
@@ -110,7 +100,6 @@ async def processar_dados(
                     detail=f"Variáveis não encontradas no CSV: {', '.join(missing_vars)}. Colunas disponíveis: {list(df.columns)}"
                 )
 
-        # Resto do código permanece igual...
         with tempfile.TemporaryDirectory() as temp_dir:
             csv_path = os.path.join(temp_dir, file.filename)
 
@@ -168,10 +157,12 @@ async def processar_dados(
 
 @app.get("/conversao-txt")
 async def transformartxt(
-    num_k: int
+    num_k: int,
+    internal_vars_string: Optional[str]
 ):
    
-    
+    internal_vars = desconcatena_vars(internal_vars_string)
+
     match num_k:
         case 2: 
             file_path = "K2/LogGoMK2(1).TXT"
@@ -244,7 +235,8 @@ async def transformartxt(
         if not parts:
             continue
 
-        if parts[0].startswith("Var"):
+        if parts[0] in internal_vars:
+            print(internal_vars, internal_vars_string)
             current_var = parts[0]
             
             parts = parts[1:]
