@@ -181,10 +181,6 @@ async def transformartxt(
             
         case 4: 
             file_path = "K4/LogGoMK4(1).TXT"
-        
-        case _:
-            #fazer tratamento do erro aqui
-            file_path = "k2"
     
 
     if not os.path.exists(file_path):
@@ -230,8 +226,17 @@ async def transformartxt(
     data = []
     current_var = None
     
-    # Colunas esperadas para o DataFrame final (8 colunas)
-    cols = ["Variable", "Level", "n", "perc", "k1", "k2", "k1_perc_lj", "k2_perc_lj"]
+    
+    match num_k:
+        case 2: 
+            cols = ["Variable", "Level", "n", "perc", "k1", "k2", "k1_perc_lj", "k2_perc_lj"]
+
+        case 3: 
+            cols = ["Variable", "Level", "n", "perc", "k1", "k2", "k1_perc_lj", "k2_perc_lj"]
+            
+        case 4: 
+            cols = ["Variable", "Level", "n", "perc", "k1", "k2", "k1_perc_lj", "k2_perc_lj"]
+    
 
     for line in table_lines:
         # Usa regex para dividir por um ou mais espaços e remove elementos vazios
