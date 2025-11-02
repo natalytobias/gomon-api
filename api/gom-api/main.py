@@ -105,6 +105,7 @@ async def processar_dados(
 
             # Salva o arquivo CSV limpo
             df.to_csv(csv_path, index=False)
+        
 
             output_file_path = os.path.join(temp_dir, "model_output.json")
             internal_vars_str = ",".join(internal_vars) if internal_vars else ""
@@ -294,45 +295,7 @@ async def transformartxt(
         "csv_path": output_path
     }
 
-@app.get("/dados-heatmap")
-async def retornarDadosHeatmap():
-    # 1. Carregar os dados
-    try:
-        df = pd.read_csv("csv_results/LMFR.csv")
-    except FileNotFoundError:
-        return {"error": "Arquivo CSV não encontrado"}, 404
-
-    # 2. Definir as colunas que queremos (Opção 1 - k1 e k2)
-    colunas_importantes = ["Variable", "Level", "k1", "k2"]
-    df_filtrado = df[colunas_importantes].copy()
+@app.get("/sunburst-map")
+async def sunburst():{
     
-    # 3. Preparar os rótulos dos eixos
-    # Eixo X: Perfis k1 e k2 (colunas)
-    x_labels = ["k1", "k2"]
-    
-    # Eixo Y: Combinação de Variable + Level (linhas)
-    y_labels = []
-    for _, row in df_filtrado.iterrows():
-        y_label = f"{row['Variable']} - {row['Level']}"
-        y_labels.append(y_label)
-    
-    # 4. Criar a estrutura de dados para ECharts [x_index, y_index, value]
-    echarts_data = []
-    
-    for y_index, row in df_filtrado.iterrows():
-        # Para k1: [0, y_index, valor_k1]
-        echarts_data.append([0, y_index, float(row["k1"])])
-        
-        # Para k2: [1, y_index, valor_k2]  
-        echarts_data.append([1, y_index, float(row["k2"])])
-
-    # 5. Empacotar e retornar o JSON
-    response_data = {
-        "xAxisLabels": x_labels,  # ['k1', 'k2']
-        "yAxisLabels": y_labels,  # ['Var1 - l1', 'Var1 - l2', 'Var1 - l3', ...]
-        "data": echarts_data,     # [[0, 0, 0.6461], [1, 0, 0.0], [0, 1, 0.0], ...]
-        "valueKey": "Coeficiente GOM"
-    }
-    
-    return response_data
-
+}
