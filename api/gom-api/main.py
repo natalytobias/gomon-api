@@ -296,6 +296,50 @@ async def transformartxt(
     }
 
 @app.get("/sunburst-map")
-async def sunburst():{
-    
-}
+async def sunburst(num_k: int):
+
+    df = pd.read_csv('csv_results/LMFR.csv')
+    df.columns = df.columns.str.strip()
+
+    # usa o parâmetro recebido
+    if num_k == 2:
+        headers_k = ["K1", "K2"]
+        percent_k = ["k1_perc_lj", "k2_perc_lj"]
+    elif num_k == 3:
+        headers_k = ["K1", "K2", "K3"]
+        percent_k = ["k1_perc_lj", "k2_perc_lj", "k3_perc_lj"]
+    elif num_k == 4:
+        headers_k = ["K1", "K2", "K3", "K4"]
+        percent_k = ["k1_perc_lj", "k2_perc_lj", "k3_perc_lj", "k4_perc_lj"]
+    else:
+        return {"error": "num_k precisa ser 2, 3 ou 4"}
+
+    output = []
+
+    # Monta estrutura JSON
+    for k, pk in zip(headers_k, percent_k):
+        k_block = {"name": k, "children": []}
+        
+        for var, group in df.groupby("Variable"):
+            var_block = {"name": var, "children": []}
+            
+            for _, row in group.iterrows():
+                var_block["children"].append({
+                    "name": row["Level"],
+                    "value": float(row[pk])
+                })
+            
+            k_block["children"].append(var_block)
+        
+        output.append(k_block)
+
+    # Retorna JSON diretamente
+    return output
+
+
+
+
+
+
+
+
