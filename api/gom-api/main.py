@@ -8,12 +8,11 @@ from typing import List, Optional
 import pandas as pd
 import re
 from fastapi.middleware.cors import CORSMiddleware
+import requests
 
-
-# Cria a instância da aplicação FastAPI
 app = FastAPI()
 
-# libera o frontend no localhost:5173
+
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173"
@@ -40,12 +39,11 @@ def desconcatena_vars(string_vars: Optional[str]) -> List[str]:
             return vars_list
 
 
-# Endpoint de verificação de status da API
 @app.get("/")
 async def home():
     return {"message": "Bem-vindo à sua API. Use o endpoint /upload-data/ para enviar seus dados."}
 
-# Endpoint principal para o upload de dados
+
 @app.post("/upload-data/")
 async def processar_dados(
     file: UploadFile = File(...),
@@ -157,7 +155,7 @@ async def processar_dados(
         raise HTTPException(status_code=500, detail=f"Erro inesperado: {str(e)}")
 
 @app.get("/conversao-txt")
-async def transformartxt(
+async def transformar_txt(
     num_k: int,
     internal_vars_string: Optional[str]
 ):
@@ -295,9 +293,6 @@ async def transformartxt(
         "csv_path": output_path
     }
 
-
-
-
 @app.get("/sunburst-map")
 async def sunburst(num_k: int):
 
@@ -336,8 +331,9 @@ async def sunburst(num_k: int):
         
         output.append(k_block)
 
-    # Retorna JSON diretamente
+
     return output
+
 
 
 
