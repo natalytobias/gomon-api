@@ -8,22 +8,24 @@ from typing import List, Optional
 import pandas as pd
 import re
 from fastapi.middleware.cors import CORSMiddleware
-import requests
+#import requests
 
 app = FastAPI()
 
 
 origins = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",      # ← ADICIONE ESTA LINHA
+    "http://127.0.0.1:5174"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # quem pode acessar
+    allow_origins=origins,  
     allow_credentials=True,
-    allow_methods=["*"],    # libera todos os métodos (GET, POST, etc.)
-    allow_headers=["*"],    # libera todos os headers
+    allow_methods=["*"],    
+    allow_headers=["*"],    
 )
 
 def desconcatena_vars(string_vars: Optional[str]) -> List[str]:
@@ -52,6 +54,7 @@ async def processar_dados(
     case_id: str = Form(...),
     internal_vars_string: Optional[str] = Form(None),
 ):
+    
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="O arquivo deve ser um CSV.")
         
@@ -296,7 +299,7 @@ async def transformar_txt(
 @app.get("/sunburst-map")
 async def sunburst(num_k: int):
 
-    df = pd.read_csv('csv_results/LMFR3.csv')
+    df = pd.read_csv('csv_results/LMFR.csv')
     df.columns = df.columns.str.strip()
 
     # usa o parâmetro recebido
@@ -334,6 +337,14 @@ async def sunburst(num_k: int):
 
     return output
 
+@app.get("/tabela-resultados")
+async def tabela_resultado():
+
+    df = pd.read_csv('csv_results/LMFR2.csv')
+
+    result = df.to_dict(orient='records')
+
+    return result
 
 
 
