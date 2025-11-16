@@ -340,7 +340,7 @@ async def sunburst(num_k: int):
 @app.get("/tabela-resultados")
 async def tabela_resultado():
 
-    df = pd.read_csv('csv_results/LMFR2.csv')
+    df = pd.read_csv('csv_results/LMFR.csv')
 
     result = df.to_dict(orient='records')
 
