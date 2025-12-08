@@ -1,0 +1,92 @@
+Mon Nov 17 19:23:39 2025
+
+
+*GoMRcpp Summary***********************
+Input data object---------------------: From input data object
+Number of profiles in initial model---: 2
+Number of profiles in final model-----: 2
+GoM scores algorithm------------------: gradient.1992
+Initial GoM scores--------------------: equal.values
+Fit GoM scores------------------------: TRUE
+Pure type probabilities algorithm-----: gradient.1992
+Initial pure type probabilities-------: random
+Fit pure type probabilities-----------: TRUE
+Sort profiles-------------------------: TRUE
+Records in data object----------------: 1000
+Unique data patterns------------------: From input data object
+Case label----------------------------: SubjID
+Case weight---------------------------: None
+Internal variables--------------------: Var1 Var2 Var3 
+External variables--------------------: ------ 
+
+
+*Note 24 unique data patterns (I) has found in data object.
+
+
+Frequency Table Original Data:
+    	   	n	%
+Var1	l1	326	32.600
+    	l2	331	33.100
+    	l3	343	34.300
+
+Var2	l1	513	51.300
+    	l2	487	48.700
+
+Var3	l1	255	25.500
+    	l2	220	22.000
+    	l3	270	27.000
+    	l4	255	25.500
+
+
+Primal Pure Type Probabilities:
+   	   	k1    	k2    
+Var1	l1	0.2006	0.0332
+    	l2	0.1546	0.9497
+    	l3	0.6447	0.0171
+
+Var2	l1	0.2307	0.6178
+    	l2	0.7693	0.3822
+
+Var3	l1	0.0541	0.1530
+    	l2	0.5433	0.8003
+    	l3	0.0105	0.0288
+    	l4	0.3921	0.0179
+
+
+Latter Pure Type Probabilities:
+   	   	k1    	k2    
+Var1	l1	0.4883	0.0000
+    	l2	0.0000	1.0000
+    	l3	0.5117	0.0000
+
+Var2	l1	0.4679	0.5982
+    	l2	0.5321	0.4018
+
+Var3	l1	0.2961	0.1975
+    	l2	0.2703	0.1466
+    	l3	0.0000	0.6559
+    	l4	0.4336	0.0000
+
+
+Primal Log-Likelihood is:       	-4114.8800
+
+
+Latter Log-Likelihood is:       	-2511.3777
+
+
+Akaike Information Criterion:   	9058.7554
+
+
+Lambda-Marginal Frequency Ratio (LMFR):
+   	   	n	%	k1    	k2    	k1/%lj	k2/%lj
+Var1	l1	326	32.600	0.4883	0.0000	1.4979	0.0000
+    	l2	331	33.100	0.0000	1.0000	0.0000	3.0211
+    	l3	343	34.300	0.5117	0.0000	1.4918	0.0000
+
+Var2	l1	513	51.300	0.4679	0.5982	0.9121	1.1661
+    	l2	487	48.700	0.5321	0.4018	1.0926	0.8251
+
+Var3	l1	255	25.500	0.2961	0.1975	1.1612	0.7745
+    	l2	220	22.000	0.2703	0.1466	1.2286	0.6664
+    	l3	270	27.000	0.0000	0.6559	0.0000	2.4293
+    	l4	255	25.500	0.4336	0.0000	1.7004	0.0000
