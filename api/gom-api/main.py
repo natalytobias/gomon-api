@@ -337,6 +337,52 @@ async def sunburst(num_k: int):
 
     return output
 
+@app.get("/correlation-matrix")
+async def correlation_matrix(num_k: int):
+    import pandas as pd
+    
+    # 1. Carregar CSV
+    df = pd.read_csv("csv_results/LMFR.csv")
+    df.columns = df.columns.str.strip()
+
+    # 2. Validar num_k
+    col_map = {
+        1: "k1_perc_lj",
+        2: "k2_perc_lj",
+        3: "k3_perc_lj",
+        4: "k4_perc_lj"
+    }
+
+    if num_k not in col_map:
+        return {"error": f"K inválido. Escolha entre {list(col_map.keys())}"}
+
+    col_name = col_map[num_k]
+
+    # 3. Extrair valores únicos
+    variables = sorted(df["Variable"].unique().tolist())
+    levels = sorted(df["Level"].unique().tolist())
+
+    # 4. Construir resposta para ECharts
+    # Formato: [Variable, Level, valorPerc]
+    data = []
+    for _, row in df.iterrows():
+        data.append([
+            row["Variable"],
+            row["Level"],
+            float(row[col_name])
+        ])
+
+    
+    result = {
+        "xData": [{"value": v} for v in variables],
+        "yData": [{"value": l} for l in levels],
+        "data": data
+    }
+
+    return result
+
+
+
 @app.get("/tabela-resultados")
 async def tabela_resultado():
 
@@ -345,6 +391,7 @@ async def tabela_resultado():
     result = df.to_dict(orient='records')
 
     return result
+
 
 
 
